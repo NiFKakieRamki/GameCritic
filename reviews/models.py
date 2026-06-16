@@ -6,7 +6,7 @@ import uuid
 
 class TimeStampedModel(models.Model):
 
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name="Дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата изменения")
 
     class Meta:
@@ -19,12 +19,19 @@ class Review (TimeStampedModel):
     title = models.CharField(max_length=255, verbose_name="Название игры")
     slug = models.SlugField(max_length=255, unique=True, allow_unicode=True, verbose_name="URL-слаг")
     content = models.TextField(verbose_name="Содержимое рецензии")
-    is_published = models.BooleanField(default=True, verbose_name="Опубликовано")
+    is_published = models.BooleanField(default=True, db_index=True, verbose_name="Опубликовано")
 
     class Meta:
         verbose_name = "Обзор"
         verbose_name_plural = "Обзоры"
         ordering = ['-created_at']
+        
+        indexes = [
+            models.Index(
+            fields=['author', '-created_at'],
+            name='review_author_date_idx'
+        ),
+    ]
 
     def __str__(self) -> str:
         """Строковое представление объекта для интерфейсов и логов."""
