@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load gamecritic_tags %}
 
 {% block title %}
 GameCritic | Обзоры игр
@@ -20,9 +21,7 @@ GameCritic | Обзоры игр
 
             <div class="mb-4 flex items-center gap-4">
 
-                <div class="flex h-12 w-12 items-center justify-center rounded-full bg-purple-600 text-lg font-bold text-white">
-                    {{ review.author.username|first|upper }}
-                </div>
+                {% user_avatar review.author %}
 
                 <div>
                     <p class="font-medium text-white">
