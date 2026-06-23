@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 from django.conf import settings
+from unidecode import unidecode
 import uuid
 
 
@@ -17,7 +18,7 @@ class Review (TimeStampedModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='reviews', verbose_name='Автор')
     title = models.CharField(max_length=255, verbose_name="Название игры")
-    slug = models.SlugField(max_length=255, unique=True, allow_unicode=True, verbose_name="URL-слаг")
+    slug = models.SlugField(max_length=255, unique=True, verbose_name="URL-слаг")
     content = models.TextField(verbose_name="Содержимое рецензии")
     is_published = models.BooleanField(default=True, db_index=True, verbose_name="Опубликовано")
 
@@ -39,6 +40,6 @@ class Review (TimeStampedModel):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.title, allow_unicode=True)
+            self.slug = slugify(unidecode(self.title))
 
         super().save(*args, **kwargs)
