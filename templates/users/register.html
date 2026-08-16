@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Регистрация | GameCritic{% endblock %}
+
+{% block content %}
+
+<div class="flex w-full items-center justify-center bg-zinc-950 px-4 py-12">
+  
+  <!-- Карточка формы -->
+  <div class="w-full max-w-md rounded-xl bg-zinc-900 p-8 border border-zinc-800 shadow-2xl">
+    
+    <!-- Заголовок  -->
+    <div class="mb-8 text-center">
+      <h1 class="text-3xl font-bold text-white tracking-tight">
+        Регистрация в <span class="text-purple-500">GameCritic</span>
+      </h1>
+    </div>
+
+    <!-- Форма регистрации -->
+    <form method="POST" action="{% url 'users:register' %}" class="space-y-5">
+      {% csrf_token %}
+
+      <!-- Стилизация с хаком Arbitrary variants [&>p] и {{ form.as_p }} -->
+      <div class="space-y-4 text-left text-zinc-300
+                  [&>p]:flex [&>p]:flex-col [&>p]:mb-4
+                  [&>p>label]:text-sm [&>p>label]:font-medium [&>p>label]:text-zinc-300 [&>p>label]:mb-2
+                  [&>p>input]:w-full [&>p>input]:rounded-lg [&>p>input]:border [&>p>input]:border-zinc-300 [&>p>input]:bg-zinc-200 [&>p>input]:px-4 [&>p>input]:py-3 [&>p>input]:text-sm [&>p>input]:text-zinc-900 [&>p>input]:focus:border-purple-500 [&>p>input]:focus:outline-none [&>p>input]:focus:ring-1 [&>p>input]:focus:ring-purple-500
+                  [&_.errorlist]:p-3 [&_.errorlist]:bg-red-950/40 [&_.errorlist]:border [&_.errorlist]:border-red-900 [&_.errorlist]:text-sm [&_.errorlist]:rounded-lg [&_.errorlist]:list-none [&_.errorlist]:mb-4 [&_.errorlist_li]:text-red-200
+                  [&_.helptext]:text-sm [&_.helptext]:text-zinc-500 [&_.helptext]:mt-1 [&_ul]:list-disc [&_ul]:pl-4 [&_li]:text-sm [&_li]:text-zinc-500">
+        
+        {{ form.as_p }}
+        
+      </div>
+
+      <!-- Кнопка создания аккаунта -->
+      <div class="pt-4">
+        <button type="submit" 
+                class="w-full rounded-lg bg-purple-600 px-4 py-3.5 text-sm font-semibold text-white hover:bg-purple-500 active:bg-purple-700 transition-colors cursor-pointer shadow-lg shadow-purple-900/30">
+          Создать аккаунт
+        </button>
+      </div>
+    </form>
+
+  </div>
+</div>
+{% endblock %}

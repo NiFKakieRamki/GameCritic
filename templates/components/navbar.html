@@ -39,11 +39,52 @@
 
         </ul>
 
-        <!-- Авторизация -->
-        <a href="#"
+        {% comment %} <!-- Авторизация -->
+        <a href=" {% url 'users:login' %} "
            class="rounded-lg bg-purple-600 px-5 py-2 font-medium text-white transition-colors hover:bg-purple-500">
             Войти / Регистрация
-        </a>
+        </a> {% endcomment %}
+
+        <!-- Авторизация (Обновленный блок по заданию практической №10) -->
+        <div class="flex items-center gap-4">
+
+            {% if user.is_authenticated %}  <!-- если авторизирован -->
+                
+                <div class="flex items-center gap-4">
+                    <!-- Аватарка -->
+                    <div class="w-8 h-8 [&>div]:w-full [&>div]:h-full [&>div]:text-sm">
+                        {% include 'reviews/components/avatar.html' %}
+                    </div>
+
+                    <!-- Имя пользователя -->
+                    <span class="text-base font-medium text-zinc-300">
+                        Привет, <strong class="text-purple-400 font-semibold">{{ user.username }}</strong>
+                    </span>
+
+                    <!-- Кнопка "Выйти" через POST -->
+                    <form method="POST" action="{% url 'users:logout' %}" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" 
+                                class="text-base font-semibold text-zinc-400 hover:text-white transition-colors cursor-pointer bg-transparent border-none p-0">
+                            Выйти
+                        </button>
+                    </form>
+                </div>
+
+            {% else %}
+                <div class="flex items-center gap-4">
+                    <a href="{% url 'users:login' %}" 
+                       class="text-sm font-medium text-zinc-300 transition-colors hover:text-purple-400">
+                        Войти
+                    </a>
+                    
+                    <a href="{% url 'users:register' %}" 
+                       class="rounded-lg bg-purple-600 px-5 py-2 font-medium text-white transition-colors hover:bg-purple-500 shadow-lg shadow-purple-900/20">
+                        Регистрация
+                    </a>
+                </div>
+            {% endif %}
+        </div>
 
     </nav>
 </header>
