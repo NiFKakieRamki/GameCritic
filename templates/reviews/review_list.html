@@ -19,6 +19,14 @@ GameCritic | Обзоры игр
         {% for review in reviews %}
         <article class="rounded-xl border border-zinc-800 bg-zinc-900 p-6 shadow-lg">
 
+            {% if review.cover_image %}
+                <div class="mb-4 overflow-hidden rounded-2xl border border-zinc-700 shadow-sm">
+                    <!-- Тэг .url автоматически сгенерирует правильную ссылку на файл в папке media -->
+                    <img src="{{ review.cover_image.url }}" alt="{{ review.title }}" class="w-full h-48 object-cover hover:scale-105 transition-transform duration-300">
+                </div>
+            {% endif %}
+
+
             <div class="mb-4 flex items-center gap-4">
 
                 {% user_avatar review.author %}

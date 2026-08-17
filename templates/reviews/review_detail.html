@@ -17,6 +17,13 @@
 
 <article class="rounded-xl border border-zinc-800 bg-zinc-900 p-8 shadow-lg">
 
+    {% if review.cover_image %}
+        <div class="mb-8 overflow-hidden rounded-3xl border border-slate-200 shadow-md">
+            <img src="{{ review.cover_image.url }}" alt="{{ review.title }}" class="w-full max-h-[400px] object-cover">
+        </div>
+    {% endif %}
+
+
     <div class="mb-6 flex items-center gap-4">
 
         {% user_avatar review.author %}

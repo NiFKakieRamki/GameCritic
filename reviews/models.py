@@ -20,6 +20,7 @@ class Review (TimeStampedModel):
     title = models.CharField(max_length=255, verbose_name="Название игры")
     slug = models.SlugField(max_length=255, unique=True, verbose_name="URL-слаг")
     content = models.TextField(verbose_name="Содержимое рецензии")
+    cover_image = models.ImageField(upload_to='reviews/covers/%Y/%m/', blank=True, null=True, verbose_name="Обложка")
     is_published = models.BooleanField(default=True, db_index=True, verbose_name="Опубликовано")
 
     class Meta:

@@ -28,7 +28,7 @@ def review_create_view(request):
     """
     #Если отправлена заполеннная форма
     if request.method == 'POST':
-        form = ReviewForm(request.POST) # Передаем сырые данные
+        form = ReviewForm(request.POST, request.FILES) # Передаем сырые данные
 
         # Запускаем валидацию
         if form.is_valid():

@@ -8,7 +8,7 @@
     <p class="text-slate-500 mb-8">Поделитесь вашими мыслями с сообществом.</p>
 
     <!-- Форма отправляет POST-запрос на этот же URL -->
-    <form method="POST" action="" class="space-y-6">
+    <form action="" method='POST' enctype="multipart/form-data" class="space-y-6">
         {% csrf_token %}
 
         <!-- Вывод ошибок формы в целом -->
@@ -17,9 +17,9 @@
                 {{ form.non_field_errors }}
             </div>
         {% endif %}
-
+        
         <!-- БЛОК 1: Заголовок -->
-        <div>
+        <div class="mb-6">
             <label for="{{ form.title.id_for_label }}" class="block text-sm font-semibold text-slate-700 mb-2">
                 {{ form.title.label }}
             </label>
@@ -31,8 +31,39 @@
             {% endif %}
         </div>
 
-        <!-- БЛОК 2: Контент -->
+
+        <!-- БЛОК. КАРТИНКИ -->
         <div>
+            <label for="{{ form.cover_image.id_for_label }}" class="block text-sm font-semibold text-slate-700 mb-2">
+                {{ form.cover_image.label }}
+            </label>
+
+
+            <div class="flex items-center gap-4">
+                <!-- Скрытое стандартное поле Django -->
+                <div class="hidden">
+                    {{ form.cover_image }}
+                </div>
+
+                <label for="{{ form.cover_image.id_for_label }}" 
+                       class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-xl border border-slate-300 cursor-pointer shadow-sm transition-all text-sm inline-flex items-center gap-2">
+                    <!-- Иконка изображения -->
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#434343"><path d="M240-320h480v-320H240v320Zm-80 160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-480H160v480Zm0 0v-480 480Zm160-160 85-113 55 73 75-100 105 140H320Z"/></svg>
+                    Выбрать обложку
+                </label>
+
+                <!-- Место для вывода имени выбранного файла -->
+                <span id="file-name" class="text-sm text-slate-400 italic">Файл не выбран</span>
+            </div>
+
+            <div class="mb-3 hidden" id="preview-container">
+                <img id="image-preview" src="" alt="Preview" class="h-48 object-cover rounded-lg border border-slate-200 shadow-sm">
+            </div>
+            
+        </div>
+
+        <!-- БЛОК 2: Контент -->
+        <div class="mb-6">
             <label for="{{ form.content.id_for_label }}" class="block text-sm font-semibold text-slate-700 mb-2">
                 {{ form.content.label }}
             </label>
@@ -55,10 +86,36 @@
         <div class="pt-6 border-t border-slate-100 flex items-center justify-between">
             <a href="{% url 'reviews:list' %}" class="text-slate-500 hover:text-slate-800 font-medium transition-colors">Отмена</a>
             
-            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold shadow-sm hover:shadow transition-all">
+            <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-bold shadow-sm hover:shadow transition-all">
                 Опубликовать статью
             </button>
         </div>
     </form>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const imageInput = document.getElementById('image-upload-input');   // скрытый <input type="file">
+        const previewContainer = document.getElementById('preview-container'); // превью
+        const imagePreview = document.getElementById('image-preview');      // <img> внутри превью
+        const fileNameSpan = document.getElementById('file-name');          // <span> для имени файла
+
+        imageInput.addEventListener('change', function(event) {
+            if (event.target.files && event.target.files[0]) {
+                const file = event.target.files[0];
+                const objectUrl = URL.createObjectURL(file);
+
+                imagePreview.src = objectUrl;
+                fileNameSpan.textContent = file.name;
+                previewContainer.classList.remove('hidden');
+            } else {
+                imagePreview.src = '';
+                fileNameSpan.textContent = 'Файл не выбран';
+                previewContainer.classList.add('hidden');
+            }
+        });
+    });
+</script>
+
+
 {% endblock content %}
