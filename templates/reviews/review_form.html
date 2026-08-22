@@ -1,10 +1,13 @@
 {% extends 'base.html' %}
 
-{% block title %}Создать публикацию | GameCritic{% endblock title %}
+{% block title %}
+{% if is_edit %}Редактирование обзора{% else %}Создать публикацию{% endif %} | GameCritic
+{% endblock title %}
 
 {% block content %}
 <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-200 p-8 md:p-10">
-    <h1 class="text-3xl font-bold text-slate-900 mb-2">Новая публикация</h1>
+    <h1 class="text-3xl font-bold text-slate-900 mb-2">
+        {% if is_edit %}Редактирование обзора{% else %}Новая публикация{% endif %}</h1>
     <p class="text-slate-500 mb-8">Поделитесь вашими мыслями с сообществом.</p>
 
     <!-- Форма отправляет POST-запрос на этот же URL -->
@@ -87,7 +90,7 @@
             <a href="{% url 'reviews:list' %}" class="text-slate-500 hover:text-slate-800 font-medium transition-colors">Отмена</a>
             
             <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-bold shadow-sm hover:shadow transition-all">
-                Опубликовать статью
+                {% if is_edit %}Сохранить изменения{% else %}Опубликовать статью{% endif %}
             </button>
         </div>
     </form>

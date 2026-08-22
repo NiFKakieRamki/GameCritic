@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load gamecritic_tags %}
+
+
+<form method="POST" class="flex items-center gap-3">
+    {% csrf_token %}
+
+    <div class="bg-red-50 border border-red-200 rounded-xl p-4 text-sm text-red-800">
+        Вы уверены, что хотите навсегда удалить обзор на игру 
+        <strong class="font-bold text-red-950">«{{ review.title }}»</strong>? 
+        Это действие нельзя будет отменить.
+    </div>
+
+    <a href="{% url 'reviews:detail' post.slug %}" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-xl border border-slate-200 transition-colors text-sm text-center">
+        Отмена</a>
+    <button type="submit" class="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl shadow-sm hover:shadow transition-all text-sm">
+        Да, удалить навсегда</button>
+</form>

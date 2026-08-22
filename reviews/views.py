@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required #Защита маршрута
+from django.contrib.auth.decorators import login_required 
+from django.http import HttpResponseForbidden
 from .models import Review
 from .forms import ReviewForm
 
@@ -52,3 +53,32 @@ def review_create_view(request):
         }
     return render(request, 'reviews/review_form.html', context)
 
+@login_required
+def review_update_view(request, review_slug):
+    review = get_object_or_404(Review, slug=review_slug)
+
+    if review.author != request.user:
+        return HttpResponseForbidden("Ошибка 403: Доступ запрещен.")
+
+    if request.method == 'POST':
+        form = ReviewForm(request.POST, request.FILES, instance=review)
+        if form.is_valid():
+            form.save() 
+            return redirect('reviews:detail', review_slug=review.slug)
+    else:
+        form = ReviewForm(instance=review)
+
+    return render(request, 'reviews/review_form.html', {'form': form, 'is_edit': True})
+
+@login_required
+def review_delete_view(request, review_slug):
+    review = get_object_or_404(Review, slug=review_slug)
+
+    if review.author != request.user:
+        return HttpResponseForbidden("Ошибка 403: Доступ запрещен.")
+
+    if request.method == 'POST':
+        review.delete()
+        return redirect('reviews:list')
+
+    return render(request, 'reviews/review_confirm_delete.html', {'review': review})
