@@ -32,8 +32,9 @@ GameCritic | Обзоры игр
                 {% user_avatar review.author %}
 
                 <div>
-                    <p class="font-medium text-white">
-                        {{ review.author.username }}
+                    <p class="font-medium">
+                        <a href="{% url 'users:profile' review.author.username %}" class="text-white hover:text-gc-accent-hover font-semibold transition-colors">
+                            {{ review.author.username }}</a>
                     </p>
 
                     <p class="text-sm text-zinc-400">
@@ -44,7 +45,7 @@ GameCritic | Обзоры игр
             </div>
 
             <h2 class="mb-3 text-2xl font-bold">
-                <a href="{% url 'reviews:detail' review_slug=review.slug %}" class="text-white hover:text-purple-400">
+                <a href="{% url 'reviews:detail' review_slug=review.slug %}" class="text-white hover:text-gc-accent-hover">
                     {{ review.title }}
                 </a>
             </h2>

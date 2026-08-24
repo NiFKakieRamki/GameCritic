@@ -1,5 +1,5 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 
 def register_view(request):
@@ -30,4 +30,17 @@ def logout_view(request):
     logout(request)
     return redirect('reviews:list')
 
+def author_profile_view(request, username):
 
+    User = get_user_model()
+
+    author = get_object_or_404(User, username=username)
+
+    author_reviews = author.reviews.filter(is_published=True).order_by('-created_at')
+
+    context = {
+        'author': author,
+        'author_reviews': author_reviews
+    }
+
+    return render(request, 'users/author_profile.html', context)

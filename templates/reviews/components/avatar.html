@@ -1,5 +1,23 @@
-
-<div class="h-12 w-12 rounded-full bg-purple-600 flex items-center justify-center text-lg font-bold text-white uppercase" 
+{% comment %} <div class="h-12 w-12 rounded-full bg-gc-accent flex items-center justify-center text-lg font-bold text-white uppercase" 
      title="{{ user.username }}">
-    {{ user.username|slice:":1" }}
+    {{ user.username|make_list|first|upper }}
+</div>  {% endcomment %}
+
+
+<!-- Круглый контейнер аватарки, который использует ваши OKLCH-цвета из input.css -->
+<div class="h-12 w-12 rounded-full bg-gc-accent flex items-center justify-center text-lg font-bold text-white uppercase">
+    
+    <!-- Проверяем аватарку через переменную 'user', которую возвращает Python-функция -->
+    {% if user.profile.avatar %} 
+        <img src="{{ user.profile.avatar.url }}" alt="Avatar" class="w-full h-full object-cover">
+    {% else %}
+        <!-- Выводим готовую и безопасную букву из Python-функции -->
+        <span class="text-base font-bold text-white uppercase select-none">
+            {{ initial }}
+        </span>
+    {% endif %}
+    
 </div>
+
+
+
