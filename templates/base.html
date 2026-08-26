@@ -14,6 +14,24 @@
     {% include "components/navbar.html" %}
 
     <main class="flex-1">
+
+        {% if messages %}
+            <div class="max-w-7xl mx-auto px-4 mt-4 space-y-4">
+                {% for message in messages %}
+                    <div class="p-4 rounded-xl shadow-sm border font-medium text-sm
+                        {% if message.tags == 'success' %}
+                            bg-emerald-950/80 border-emerald-500/30 text-emerald-200
+                        {% elif message.tags == 'error' %}
+                            bg-red-950/80 border-red-500/30 text-red-200
+                        {% else %}
+                            bg-zinc-800/80 border-gc-border text-zinc-200
+                        {% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
         {% block content %}
         {% endblock content %}
     </main>

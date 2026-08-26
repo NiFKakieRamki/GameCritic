@@ -2,6 +2,7 @@
 
 @source "../../templates/**/*.html";
 @source "../../**/templates/**/*.html";
+@source "../../**/*.{html,js,py}";
 
 @theme {
       /* цвета GameCritic */

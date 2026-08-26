@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}Настройки профиля | GameCritic{% endblock title %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 py-8">
+
+    <!-- Шапка страницы -->
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold text-white">Настройки профиля</h1>
+        <p class="text-xs text-zinc-400 mt-1">Обновите вашу личную информацию и аватар.</p>
+    </div>
+
+    <!-- Карточка с формой -->
+    <form method="POST" enctype="multipart/form-data"
+          class="bg-gc-card rounded-2xl shadow-md border border-gc-border p-6 md:p-8 space-y-8">
+        {% csrf_token %}
+
+        <!-- ===== Блок 1: данные аккаунта ===== -->
+        <section class="space-y-5">
+            <h2 class="text-lg font-semibold text-gc-accent border-b border-gc-border pb-2">
+                Основные данные
+            </h2>
+
+            <div class="space-y-2">
+                <label for="{{ u_form.username.id_for_label }}"
+                       class="block text-sm font-medium text-zinc-300">
+                    Имя пользователя
+                </label>
+                {{ u_form.username }}
+                {% if u_form.username.help_text %}
+                    <p class="text-xs text-zinc-500">{{ u_form.username.help_text }}</p>
+                {% endif %}
+                {% for error in u_form.username.errors %}
+                    <p class="text-xs font-medium text-red-400">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <div class="space-y-2">
+                <label for="{{ u_form.email.id_for_label }}"
+                       class="block text-sm font-medium text-zinc-300">
+                    Адрес электронной почты
+                </label>
+                {{ u_form.email }}
+                {% for error in u_form.email.errors %}
+                    <p class="text-xs font-medium text-red-400">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- ===== Блок 2: данные профиля ===== -->
+        <section class="space-y-5">
+            <h2 class="text-lg font-semibold text-gc-accent border-b border-gc-border pb-2">
+                Данные профиля
+            </h2>
+
+            <!-- Превью текущей аватарки -->
+            <div class="flex items-center gap-4">
+                <div class="w-16 h-16 rounded-full overflow-hidden border border-gc-border bg-gc-accent flex items-center justify-center shrink-0">
+                    {% if request.user.profile.avatar.url %}
+                        <img src="{{ request.user.profile.avatar.url }}"
+                             alt="Текущий аватар"
+                             class="w-full h-full object-cover">
+                    {% else %}
+                        <span class="text-2xl font-bold text-white uppercase select-none">
+                            {{ request.user.username|make_list|first }}
+                        </span>
+                    {% endif %}
+                </div>
+                <p class="text-xs text-zinc-500">
+                    {% if request.user.profile.avatar %}
+                        Текущая фотография профиля.
+                    {% else %}
+                        Аватар пока не загружен — показывается первая буква ника.
+                    {% endif %}
+                </p>
+            </div>
+
+            <div class="space-y-2
+                        [&_input[type=checkbox]]:w-4 [&_input[type=checkbox]]:h-4
+                        [&_input[type=checkbox]]:mx-2 [&_input[type=checkbox]]:align-middle
+                        [&_input[type=checkbox]]:accent-gc-accent
+                        [&_input[type=checkbox]]:cursor-pointer
+                        [&_a]:text-gc-accent [&_a]:font-semibold [&_a]:break-all
+                        [&_a]:hover:text-gc-accent-hover [&_a]:transition-colors">
+                <label for="{{ p_form.avatar.id_for_label }}"
+                       class="block text-sm font-medium text-zinc-300">
+                    Аватарка
+                </label>
+                <div class="text-xs text-zinc-400 leading-relaxed">
+                    {{ p_form.avatar }}
+                </div>
+                {% for error in p_form.avatar.errors %}
+                    <p class="text-xs font-medium text-red-400">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <div class="space-y-2">
+                <label for="{{ p_form.bio.id_for_label }}"
+                       class="block text-sm font-medium text-zinc-300">
+                    О себе
+                </label>
+                {{ p_form.bio }}
+                <p class="text-xs text-zinc-500">Не более 500 символов.</p>
+                {% for error in p_form.bio.errors %}
+                    <p class="text-xs font-medium text-red-400">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Нижняя панель действий -->
+        <div class="pt-5 border-t border-gc-border flex items-center justify-between">
+            <a href="{% url 'users:profile' username=request.user.username %}"
+               class="text-sm font-medium text-zinc-400 hover:text-white transition-colors">
+                Отмена
+            </a>
+
+            <button type="submit"
+                    class="bg-gc-accent hover:bg-gc-accent-hover text-white px-6 py-2.5 rounded-xl font-bold text-sm transition-colors cursor-pointer shadow-lg shadow-purple-900/30">
+                Сохранить изменения
+            </button>
+        </div>
+
+    </form>
+</div>
+{% endblock content %}

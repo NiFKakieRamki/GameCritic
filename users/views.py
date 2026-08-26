@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from .forms import UserUpdateForm, ProfileUpdateForm
 
 def register_view(request):
     if request.method == 'POST':
@@ -44,3 +47,28 @@ def author_profile_view(request, username):
     }
 
     return render(request, 'users/author_profile.html', context)
+
+@login_required
+def profile_edit_view(request):
+    if request.method == 'POST':
+        u_form = UserUpdateForm(request.POST, instance=request.user)
+        p_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
+
+        if u_form.is_valid() and p_form.is_valid():
+            u_form.save()
+            p_form.save()
+
+            messages.success(request, 'Ваш профиль успешно обновлён!')
+            return redirect('users:profile_edit')
+
+    else:
+        u_form = UserUpdateForm(instance=request.user)
+        p_form = ProfileUpdateForm(instance=request.user.profile)
+
+    context = {
+        'u_form': u_form,
+        'p_form': p_form
+    }
+
+    return render(request, 'users/profile_edit.html', context)
+
