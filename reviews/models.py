@@ -44,3 +44,17 @@ class Review (TimeStampedModel):
             self.slug = slugify(unidecode(self.title))
 
         super().save(*args, **kwargs)
+
+class Comment(models.Model):
+    review = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='comments', verbose_name='Обзор')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='comments', verbose_name='Автор')
+    body = models.TextField(max_length=500, verbose_name='Текст комментария')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Время создания')
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
+
+    def __str__(self):
+        return f'Комментарий от {self.author.username} к «{self.review.title}»'

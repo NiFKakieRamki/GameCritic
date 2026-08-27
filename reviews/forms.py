@@ -1,5 +1,5 @@
 from django import forms
-from .models import Review
+from .models import Review, Comment
 
 class ReviewForm(forms.ModelForm):
     class Meta:
@@ -34,3 +34,19 @@ class ReviewForm(forms.ModelForm):
             'is_published': 'Опубликовать сразу?'
         }
 
+class CommentForm(forms.ModelForm):
+
+    class Meta:
+        model = Comment
+        fields = ['body']
+        widgets = {
+        'body': forms.Textarea(attrs={
+            'rows': 3,
+            'class': 'w-full bg-white text-slate-900 px-4 py-3 rounded-xl border border-slate-300 placeholder-slate-400 resize-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all',
+            'placeholder': 'Поделитесь мнением об этой игре...'
+        })
+    }
+
+        labels = {
+                'body': ''
+            }
