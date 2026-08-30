@@ -5,13 +5,24 @@ from .models import Review
 from .forms import ReviewForm, CommentForm
 
 def review_list_view(request):
-    reviews = Review.objects.filter(is_published=True).select_related('author')
+    feed_type = request.GET.get('feed', 'all')
+
+    if feed_type == 'following' and request.user.is_authenticated:
+        reviews = Review.objects.filter(
+            is_published=True,
+            author__profile__in=request.user.profile.follows.all()
+        ).order_by('-created_at')
+
+    else:
+        reviews = Review.objects.filter(is_published=True).order_by('-created_at')
 
     context = {
         'reviews': reviews,
+        'feed_type': feed_type
     }
 
     return render(request, 'reviews/review_list.html', context)
+
 
 def review_detail_view(request, review_slug):
     review = get_object_or_404(Review, slug=review_slug, is_published=True)

@@ -34,13 +34,49 @@
                     </p>
                 </div>
 
-                <!-- КНОПКА РЕДАКТИРОВАНИЯ -->
-                {% if request.user.is_authenticated and request.user.username == author.username %}
-                    <div class="flex">
-                        <a href="{% url 'users:profile_edit' %}" class="inline-block px-5 py-2.5 bg-zinc-700 hover:bg-zinc-600 text-white text-xs font-bold rounded-xl transition-all shadow-sm border border-gc-border text-center">
-                            Редактировать профиль
-                        </a>
-                    </div>
+                <!-- Счётчики подписок -->
+                <div class="flex items-center justify-center md:justify-start gap-4 mt-3 text-sm">
+                    <span class="text-zinc-400">
+                        <span class="font-bold text-white">{{ author.profile.followers.count }}</span> подписчиков
+                    </span>
+                    <span class="text-zinc-700">·</span>
+                    <span class="text-zinc-400">
+                        <span class="font-bold text-white">{{ author.profile.follows.count }}</span> подписок
+                    </span>
+                </div>
+
+
+                <!-- КНОПКА ДЕЙСТВИЯ -->
+                {% if request.user.is_authenticated %}
+                    {% if request.user == author %}
+
+                        <div class="flex">
+                            <a href="{% url 'users:profile_edit' %}"
+                               class="inline-block px-5 py-2.5 bg-zinc-700 hover:bg-zinc-600 text-white text-xs font-bold rounded-xl transition-all shadow-sm border border-gc-border text-center">
+                                Редактировать профиль
+                            </a>
+                        </div>
+
+                    {% else %}
+
+                        <form method="POST" action="{% url 'users:follow' author.username %}" class="flex">
+                            {% csrf_token %}
+
+                            {% if request.user.profile in author.profile.followers.all %}
+                                <button type="submit"
+                                        class="px-5 py-2.5 bg-zinc-700 hover:bg-red-900/40 hover:text-red-300 text-white text-xs font-bold rounded-xl transition-all shadow-sm border border-gc-border cursor-pointer">
+                                    Отписаться
+                                </button>
+                            {% else %}
+                                <button type="submit"
+                                        class="px-5 py-2.5 bg-gc-accent hover:bg-gc-accent-hover text-white text-xs font-bold rounded-xl transition-all shadow-lg shadow-purple-900/30 cursor-pointer">
+                                    Подписаться
+                                </button>
+                            {% endif %}
+
+                        </form>
+
+                    {% endif %}
                 {% endif %}
             </div>
             

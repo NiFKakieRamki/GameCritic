@@ -22,5 +22,12 @@ class Profile(models.Model):
         verbose_name='О себе'
     )
 
+    follows = models.ManyToManyField(
+        'self',
+        symmetrical=False,
+        related_name='followers',
+        blank=True
+    )
+
     def __str__(self):
         return f"Профиль пользователя {self.user.username}"

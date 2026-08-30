@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import UserUpdateForm, ProfileUpdateForm
 
+User = get_user_model()
+
 def register_view(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -36,7 +38,7 @@ def logout_view(request):
 
 def author_profile_view(request, username):
 
-    User = get_user_model()
+    
     author = get_object_or_404(User, username=username)
     author_reviews = author.reviews.filter(is_published=True).order_by('-created_at')
     liked_reviews = author.liked_reviews.filter(is_published=True).select_related('author')
@@ -72,4 +74,24 @@ def profile_edit_view(request):
     }
 
     return render(request, 'users/profile_edit.html', context)
+
+@login_required
+def follow_toggle_view(request, username):
+    target_user = get_object_or_404(User, username=username)
+
+    if request.user != target_user:
+        user_profile = request.user.profile
+        target_profile = target_user.profile
+
+        if user_profile.follows.filter(id=target_profile.id).exists():
+            user_profile.follows.remove(target_profile)
+
+        else:
+            user_profile.follows.add(target_profile)
+
+    return redirect(request.META.get('HTTP_REFERER', 'users:profile'), username=username)
+
+
+
+
 
