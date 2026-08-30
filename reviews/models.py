@@ -20,8 +20,12 @@ class Review (TimeStampedModel):
     title = models.CharField(max_length=255, verbose_name="Название игры")
     slug = models.SlugField(max_length=255, unique=True, verbose_name="URL-слаг")
     content = models.TextField(verbose_name="Содержимое рецензии")
+    likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='liked_reviews', blank=True)
     cover_image = models.ImageField(upload_to='reviews/covers/%Y/%m/', blank=True, null=True, verbose_name="Обложка")
     is_published = models.BooleanField(default=True, db_index=True, verbose_name="Опубликовано")
+
+    def total_likes(self):
+        return self.likes.count()
 
     class Meta:
         verbose_name = "Обзор"

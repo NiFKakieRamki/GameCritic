@@ -9,4 +9,6 @@ urlpatterns = [
     path('<slug:review_slug>/', views.review_detail_view, name='detail'),
     path('<slug:review_slug>/update/', views.review_update_view, name='update'),
     path('<slug:review_slug>/delete/', views.review_delete_view, name='delete'),
+    path('<slug:review_slug>/like/', views.like_toggle_view, name='like'),
+    
 ]

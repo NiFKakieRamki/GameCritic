@@ -101,3 +101,15 @@ def review_delete_view(request, review_slug):
         return redirect('reviews:list')
 
     return render(request, 'reviews/review_confirm_delete.html', {'review': review})
+
+@login_required
+def like_toggle_view(request, review_slug):
+
+    review = get_object_or_404(Review, slug=review_slug)
+
+    if review.likes.filter(id=request.user.id).exists():
+        review.likes.remove(request.user)
+    else:
+        review.likes.add(request.user)
+
+    return redirect(request.META.get('HTTP_REFERER', 'reviews:list'))

@@ -33,17 +33,18 @@ def logout_view(request):
     logout(request)
     return redirect('reviews:list')
 
+
 def author_profile_view(request, username):
 
     User = get_user_model()
-
     author = get_object_or_404(User, username=username)
-
     author_reviews = author.reviews.filter(is_published=True).order_by('-created_at')
+    liked_reviews = author.liked_reviews.filter(is_published=True).select_related('author')
 
     context = {
         'author': author,
-        'author_reviews': author_reviews
+        'author_reviews': author_reviews,
+        'liked_reviews': liked_reviews
     }
 
     return render(request, 'users/author_profile.html', context)

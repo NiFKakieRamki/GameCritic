@@ -57,16 +57,80 @@
 
     <!-- ЛЕНТА ПУБЛИКАЦИЙ -->
     <div class="space-y-6">
-        <h2 class="text-xl font-bold text-white border-b border-zinc-800 pb-3 flex items-center gap-2">
-            Обзоры автора <span class="text-gc-accent text-sm font-semibold">({{ author_reviews.count }})</span>
-        </h2>
+    <!-- Переключатель вкладок -->
+        <div class="flex items-center gap-2 border-b border-zinc-800 pb-3">
 
-        {% if author_reviews %}
+            <button type="button" id="btn-reviews" onclick="switchTab('reviews')"
+                    class="px-4 py-2 rounded-xl text-sm font-semibold transition-colors cursor-pointer bg-gc-accent text-white">
+                Обзоры автора ({{ author_reviews|length }})
+            </button>
+
+            <button type="button" id="btn-likes" onclick="switchTab('likes')"
+                    class="px-4 py-2 rounded-xl text-sm font-semibold transition-colors cursor-pointer text-zinc-400">
+                Понравившиеся ({{ liked_reviews|length }})
+            </button>
+
+        </div>
+
+        
             
+        <div id="tab-reviews">
+            {% if author_reviews %}
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {% for review in author_reviews %}
+                        <div class="bg-gc-card rounded-2xl shadow-md border border-gc-border overflow-hidden flex flex-col hover:border-zinc-600 hover:shadow-lg transition-all">
+                            
+                            <!-- Обложка обзора -->
+                            {% if review.cover_image %}
+                                <img src="{{ review.cover_image.url }}" alt="{{ review.title }}" class="h-48 w-full object-cover">
+                            {% else %}
+                                <div class="h-48 w-full bg-zinc-900 flex items-center justify-center text-zinc-500 border-b border-gc-border">
+                                    <span class="text-sm font-medium">Нет обложки</span>
+                                </div>
+                            {% endif %}
+
+                            <!-- Контент карточки -->
+                            <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                                <div>
+                                    <h3 class="font-bold text-white text-base hover:text-gc-accent-hover transition-colors line-clamp-2">
+                                        <a href="{% url 'reviews:detail' review.slug %}">{{ review.title }}</a>
+                                    </h3>
+                                    <p class="text-zinc-400 text-xs line-clamp-3 mt-2">
+                                        {{ review.content }}
+                                    </p>
+                                </div>
+
+                                <!-- Нижня часть карточки -->
+                                <div class="flex items-center justify-between text-[11px] text-zinc-500 font-medium pt-3 border-t border-gc-border">
+                                    <span>{{ review.created_at|date:"d.m.Y" }}</span>
+                                    <a href="{% url 'reviews:detail' review.slug %}" class="text-gc-accent hover:text-gc-accent-hover font-bold transition-colors">Читать далее →</a>
+                                </div>
+                            </div>
+
+                        </div>
+                    {% endfor %}
+                </div>
+
+            {% else %}
+                <div class="text-center py-12 bg-gc-card rounded-2xl border border-gc-border p-8 shadow-sm">
+                    <p class="text-zinc-500 text-sm">Автор пока не опубликовал ни одного обзора.</p>
+                </div>
+            {% endif %}
+
+        </div>    
+
+
+    </div>
+
+    <!-- ПОНРАВИВШИЕСЯ-->
+    <div id="tab-likes" class="hidden">
+        {% if liked_reviews %}
+
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {% for review in author_reviews %}
+                {% for review in liked_reviews %}
                     <div class="bg-gc-card rounded-2xl shadow-md border border-gc-border overflow-hidden flex flex-col hover:border-zinc-600 hover:shadow-lg transition-all">
-                        
+
                         <!-- Обложка обзора -->
                         {% if review.cover_image %}
                             <img src="{{ review.cover_image.url }}" alt="{{ review.title }}" class="h-48 w-full object-cover">
@@ -87,9 +151,9 @@
                                 </p>
                             </div>
 
-                            <!-- Нижня часть карточки -->
+                            <!-- Нижняя часть карточки -->
                             <div class="flex items-center justify-between text-[11px] text-zinc-500 font-medium pt-3 border-t border-gc-border">
-                                <span>{{ review.created_at|date:"d.m.Y" }}</span>
+                                <span>{{ review.author.username }} · {{ review.created_at|date:"d.m.Y" }}</span>
                                 <a href="{% url 'reviews:detail' review.slug %}" class="text-gc-accent hover:text-gc-accent-hover font-bold transition-colors">Читать далее →</a>
                             </div>
                         </div>
@@ -97,14 +161,36 @@
                     </div>
                 {% endfor %}
             </div>
+
         {% else %}
+
             <div class="text-center py-12 bg-gc-card rounded-2xl border border-gc-border p-8 shadow-sm">
-                <p class="text-zinc-500 text-sm">Автор пока не опубликовал ни одного обзора.</p>
+                <p class="text-zinc-500 text-sm">Пользователь пока ничего не лайкнул.</p>
             </div>
+
         {% endif %}
     </div>
 
 </div>
+
+<script>
+    function switchTab(tabName) {
+        const isReviews = tabName === 'reviews';
+
+        document.getElementById('tab-reviews').classList.toggle('hidden', !isReviews);
+        document.getElementById('tab-likes').classList.toggle('hidden', isReviews);
+
+        highlight(document.getElementById('btn-reviews'), isReviews);
+        highlight(document.getElementById('btn-likes'), !isReviews);
+    }
+
+    function highlight(btn, active) {
+        btn.classList.toggle('bg-gc-accent', active);
+        btn.classList.toggle('text-white', active);
+        btn.classList.toggle('text-zinc-400', !active);
+    }
+</script>
+
 {% endblock content %}
 
 
